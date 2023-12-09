@@ -5,9 +5,14 @@
 
 
 @layer components {
-    .link {
-        @apply cursor-pointer hover:border hover:border-white p-1 px-2 rounded-md whitespace-nowrap text-sm
-    }
+  .link {
+    @apply cursor-pointer border border-transparent p-1 px-2 rounded-md whitespace-nowrap text-sm
+}
+
+.link:hover {
+  @apply border-white;
+}
+
 
     .button {
         @apply p-2 text-xs md:text-sm bg-[#FFD814] border-[#FCD200] shadow-sm rounded-3xl hover:bg-[#dfbd11]

@@ -4,6 +4,7 @@ import {
     MenuIcon,
     ShoppingCartIcon,
     UserIcon,
+    ChevronDownIcon,
 } from "@heroicons/react/outline"
 import { useSession, signIn, signOut } from "next-auth/react"
 import User_drop_down from './Dropdown';
@@ -15,26 +16,72 @@ import SideNavigation from './SideNavigation';
 import TintBackground from './TintBackground';
 import Link from 'next/link';
 import LoadingIndicator from './LoadingIndicator';
+import { useContext } from 'react';
+import { LanguageContext } from './LanguageContext';
+
+const translations = {
+  English: {
+    signIn: 'Hello, sign in',
+    accountAndLists: 'Account & Lists',
+    returns: 'Returns',
+    orders: '& Orders',
+    cart: 'Cart',
+    searchPlaceholder: 'Search Mustaqbal',
+    all: 'all',
+    tdeal: 'Today`s Deals',
+    cs: 'Customer Service',
+    // ... other translations ...
+  },
+  Arabic: {
+    signIn: 'مرحبا، تسجيل الدخول',
+    accountAndLists: 'الحساب والقوائم',
+    returns: 'المرتجعات',
+    orders: 'والطلبات',
+    cart: 'العربة',
+    searchPlaceholder: 'ابحث في المستقبل',
+    all: 'الكل',
+    tdeal: 'عروض اليوم',
+    cs: 'مركز الخدمة'
+    // ... other translations ...
+  }
+};
 
 function Header() {
   const { data: session } = useSession();
   const router = useRouter()
   const items = useSelector(selectItems)
-  
+  const { changeLanguage } = useContext(LanguageContext);
+
+  const { language } = useContext(LanguageContext);
 
   const [sideBar, setSideBar] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+
 
   const setBarState = () => {
     setSideBar(!sideBar);
   };
 
+  const toggleLanguageDropdown = () => {
+    setShowLanguageDropdown(!showLanguageDropdown);
+  };
 
+  const closeLanguageDropdown = () => {
+    setShowLanguageDropdown(false);
+  };
+
+  const handleLanguageChange = (language) => {
+    changeLanguage(language);
+    closeLanguageDropdown();
+  };
+  const text = translations[language];
   return (
     <>
     <LoadingIndicator />
-    <header>
+
+    <header onMouseLeave={closeLanguageDropdown}>
       {/* Top nav */}
-      <div className="flex items-center bg-[#232F3E] sm:bg-[#121921] p-1 flex-grow py-2">
+      <div className="flex items-center bg-[#232F3E] sm:bg-[#121921] flex-grow py-2">
       <p  className="absolute -mt-2 ml-2 tablet:hidden items-center text-white">
           <MenuIcon onClick={setBarState} className="h-8" />
           </p>
@@ -58,11 +105,34 @@ function Header() {
 
         {/* pc search bar */}
         {/* <div className="flex absolute mt-28 w-[90%] right-0 left-0 m-auto sm:relative sm:mt-0 sm:flex items-center h-12 rounded-md flex-grow cursor-pointer"> */}
-        <div className="hidden sm:mt-0 sm:flex items-center h-12 rounded-md flex-grow cursor-pointer px-5">
-            <input className="p-2 h-full w-6 flex-grow flex-shrink rounded-l-md focus:outline-none px-4" type="text" />
-            <SearchIcon className="h-12 p-4 bg-[#febd69] hover:bg-[#F3A847] rounded-r-md" />
+        <div className="hidden sm:mt-0 sm:flex items-center h-10 rounded-md flex-grow cursor-pointer px-5">
+            <input className="p-2 h-full w-6 flex-grow flex-shrink rounded-l-md focus:outline-none px-4" type="text" placeholder={text.searchPlaceholder} />
+            <SearchIcon className="h-10 p-2 w-12 bg-[#febd69] hover:bg-[#F3A847] rounded-r-md" />
         </div>
-
+         {/* Language Dropdown */}
+         <div className="relative ml-4">
+          <button 
+            className="flex items-center text-white space-x-1" 
+            onMouseEnter={toggleLanguageDropdown}
+          >
+            <span>🌐</span>
+            <p className="font-extrabold md:text-sm">{language === 'English' ? "EN" : "AR"}</p>
+            <ChevronDownIcon className="h-4 w-4" />
+          </button>
+          {showLanguageDropdown && (
+            <div 
+              className="absolute top-full right-0 bg-white shadow-md mt-2 rounded-md z-50 w-40"
+              onMouseLeave={closeLanguageDropdown}
+            >
+              <p className="p-2 hover:bg-gray-100 cursor-pointer flex items-center" onClick={() => handleLanguageChange('English')}>
+                🇺🇸 <span className="ml-2">English</span>
+              </p>
+              <p className="p-2 hover:bg-gray-100 cursor-pointer flex items-center" onClick={() => handleLanguageChange('Arabic')}>
+              🇮🇶 <span className="ml-2">العربية</span>
+              </p>
+            </div>
+          )}
+        </div>
         {/* account & list & card */}
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
           {/* pc login */}
@@ -71,15 +141,15 @@ function Header() {
             <div onClick={() => signIn()}>
               <div className="hidden tablet:block link">
             <p>
-              {session ? `Hello, ${session.user.name}` : 'Hello, sign in'}
+            {session ? `Hello, ${session.user.name}` : text.signIn}
               
             </p>
-            <p className="font-extrabold md:text-sm">Account & Lists</p>
+            <p className="font-extrabold md:text-sm">{text.accountAndLists}</p>
             </div>
 
             {/* mobile login icon */}
             <div className="link z-40 tablet:hidden">
-                  <p className="ml-10 mx-auto text-sm">Sign in &gt;</p>
+                  <p className="ml-10 mx-auto text-sm">{text.signIn} &gt;</p>
                   <UserIcon className="h-8 ml-24 -mt-7" />
                 </div>
         </div> ) : (
@@ -89,8 +159,8 @@ function Header() {
           }
             
             <div className="hidden tablet:block link">
-                <p>Returns</p>
-                <p className="font-extrabold md:text-sm">& Orders</p>
+                <p>{text.returns}</p>
+                <p className="font-extrabold md:text-sm">& {text.orders}</p>
             </div>
             
             
@@ -102,14 +172,16 @@ function Header() {
                 </span>
 
                 <ShoppingCartIcon className="h-10" />
-                <p className="hidden font-extrabold md:text-sm md:inline mt-2">Cart</p>
+                <p className="hidden font-extrabold md:text-sm md:inline mt-2">{text.cart}</p>
             </div>
         </div>
+
+  
       </div>
       {/* mobile search */}
       <div className="bg-[#232F3E]">
       <div className="flex w-[95%] mx-auto items-center h-[44px] rounded-md flex-grow cursor-pointer sm:hidden">
-            <input className="p-2 h-full w-6 flex-grow flex-shrink rounded-l-md focus:outline-none px-4" type="text" placeholder="Search Amazon" />
+            <input className="p-2 h-full w-6 flex-grow flex-shrink rounded-l-md focus:outline-none px-4" type="text" placeholder={text.searchPlaceholder} />
             <SearchIcon className="h-[44px] p-2 bg-[#febd69] hover:bg-[#F3A847] rounded-r-md" />
         </div>
       </div>
@@ -119,12 +191,12 @@ function Header() {
       <div className="flex items-center space-x-8 p-2 pl-2 font-semibold md:text-lg text-sm bg-[#232F3E] text-white h-12 overflow-x-auto scrollbar-hide">
         <p onClick={setBarState} className="link hidden tablet:flex items-center">
           <MenuIcon className="h-6 mr-1" />
-          All</p>
-          <p className="link">Today`s Deals</p>
-          <p className="link">Customer Service</p>
-          <p className="link">Registry</p>
-          <p className="link">Gift Cards</p>
-          <p className="link">Sell</p>
+          {text.all}</p>
+          <p className="link">{text.tdeal}</p>
+          <p className="link">{text.cs}</p>
+          {/* <p className="link">Registry</p> */}
+          {/* <p className="link">Gift Cards</p>
+          <p className="link">Sell</p> */}
       </div>
     </header>
     </>
