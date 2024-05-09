@@ -177,7 +177,7 @@ function Header() {
         </div>
 
   
-      </div>
+      </div> 
       {/* mobile search */}
       <div className="bg-[#232F3E]">
       <div className="flex w-[95%] mx-auto items-center h-[44px] rounded-md flex-grow cursor-pointer sm:hidden">
