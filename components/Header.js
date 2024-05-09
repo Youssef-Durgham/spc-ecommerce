@@ -199,8 +199,9 @@ function Header() {
           <p className="link">Sell</p> */}
       </div>
     </header>
-    </>
+    </> 
   );
 }
 
 export default Header;
+ 
