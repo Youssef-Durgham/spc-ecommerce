@@ -197,7 +197,7 @@ function Header() {
           {/* <p className="link">Registry</p> */}
           {/* <p className="link">Gift Cards</p>
           <p className="link">Sell</p> */}
-      </div>
+      </div> 
     </header>
     </> 
   );
