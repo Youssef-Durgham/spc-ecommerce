@@ -149,8 +149,8 @@ function Header() {
 
             {/* mobile login icon */}
             <div className="link z-40 tablet:hidden">
-                  <p className="ml-10 mx-auto text-sm">{text.signIn} &gt;</p>
-                  <UserIcon className="h-8 ml-24 -mt-7" />
+                  {/* <p className="ml-10 mx-auto text-sm">{text.signIn} &gt;</p> */}
+                  <UserIcon className="h-6 md:h-8 ml-5 mt-0" />
                 </div>
         </div> ) : (
           <User_drop_down session={session} />
@@ -171,7 +171,7 @@ function Header() {
                   {items.length}
                 </span>
 
-                <ShoppingCartIcon className="h-10" />
+                <ShoppingCartIcon className="h-6 md:h-10" />
                 <p className="hidden font-extrabold md:text-sm md:inline mt-2">{text.cart}</p>
             </div>
         </div>
